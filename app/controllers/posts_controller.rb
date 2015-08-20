@@ -17,7 +17,7 @@ class PostsController < ApplicationController
 
   def create
     @post = Post.new(post_params)
-    @post.creator = User.first
+    @post.creator = current_user
     if @post.save
       flash[:notice] = "Your post was created."
       redirect_to posts_path
@@ -64,6 +64,6 @@ class PostsController < ApplicationController
   end
 
   def require_creator
-    access_denied unless !logged_in? and (current_user == @post.creator)
+    access_denied unless logged_in? and (current_user == @post.creator || current_user.admin?)
   end
 end
